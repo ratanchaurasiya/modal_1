@@ -1,0 +1,109 @@
+Day 1 Summary – Git & GitHub | College Module 1
+Today we learned the basics of **Git** and [GitHub]
+
+### Topics Covered:
+
+1. **How to create a repository**
+2. **How to upload code using Git commands**
+3. **Git & GitHub basic commands**
+4. **How to change/switch branches in GitHub**
+5. **How to host/deploy a repository**
+
+---
+
+# Important Git Commands
+
+### Initialize Git
+
+```bash
+git init
+```
+
+### Check Status
+
+```bash
+git status
+```
+
+### Add Files
+
+```bash
+git add .
+```
+
+### Commit Code
+
+```bash
+git commit -m "First Commit"
+```
+
+### Connect GitHub Repository
+
+```bash
+git remote add origin <repository-link>
+```
+
+### Push Code to GitHub
+
+```bash
+git push -u origin main
+```
+
+### Clone Repository
+
+```bash
+git clone <repository-link>
+```
+
+---
+
+# Branch Commands
+
+### Create New Branch
+
+```bash
+git branch branch-name
+```
+
+### Switch Branch
+
+```bash
+git checkout branch-name
+```
+
+### Create + Switch Together
+
+```bash
+git checkout -b branch-name
+```
+
+### See All Branches
+
+```bash
+git branch
+```
+
+---
+
+# Repository Hosting
+
+We also learned how to **host/deploy a repository** so the website/project can run online.
+
+Example platforms:
+
+* [GitHub Pages]
+* [Vercel]
+
+These platforms help us publish our projects on the internet.
+
+
+## Portfolio Template Project
+
+Under the guidance of our sir, we downloaded a portfolio  template from Google, customized the files, and uploaded the project to [GitHub] using Git commands.
+
+After uploading the project, we hosted/deployed the website online using platforms like:
+
+* [GitHub Pages]
+* [Vercel]
+
+With sir’s guidance, we learned how to make a portfolio website live on the internet successfully.
