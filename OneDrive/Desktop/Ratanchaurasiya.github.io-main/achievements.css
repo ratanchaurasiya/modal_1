@@ -20,6 +20,7 @@
   margin-top: 0;
   transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: transform;
+  width: 100%;
 }
 
 .achievement-card {

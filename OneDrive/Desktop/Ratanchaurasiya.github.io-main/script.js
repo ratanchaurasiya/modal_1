@@ -93,15 +93,17 @@ window.addEventListener('scroll', updateHeaderScroll);
 updateHeaderScroll();
 
 // ========== Typed.js Animation ==========
-if (document.querySelector('.text') && typeof Typed !== 'undefined') {
-  new Typed('.text', {
-    strings: ['Full Stack Developer', 'Data Analyst', 'Web Developer', 'Software Programmer'],
-    typeSpeed: 80,
-    backSpeed: 60,
-    backDelay: 1500,
-    loop: true,
-    cursorChar: '|'
-  });
+function initTypedAnimation() {
+  if (document.querySelector('.text') && typeof Typed !== 'undefined') {
+    new Typed('.text', {
+      strings: ['Full Stack Developer', 'Data Analyst', 'Web Developer', 'Software Programmer'],
+      typeSpeed: 80,
+      backSpeed: 60,
+      backDelay: 1500,
+      loop: true,
+      cursorChar: '|'
+    });
+  }
 }
 
 // ========== Active Navigation on Scroll ==========
@@ -273,6 +275,13 @@ function filterProjects(filterValue) {
       }, 300);
     }
   });
+
+  // Reset the portfolio horizontal slider offset and dot indices after transitions complete
+  setTimeout(() => {
+    if (typeof window.resetPortfolioSlider === 'function') {
+      window.resetPortfolioSlider();
+    }
+  }, 350);
 }
 
 if (filterButtons.length > 0) {
@@ -344,23 +353,25 @@ if (contactForm) {
 }
 
 // ========== Scroll Reveal Animations ==========
-if (typeof ScrollReveal !== 'undefined') {
-  const sr = ScrollReveal({
-    origin: 'bottom',
-    distance: '60px',
-    duration: 1000,
-    delay: 200,
-    reset: false
-  });
-  
-  sr.reveal('.home-content, .profile-container', { origin: 'top' });
-  sr.reveal('.about-img', { origin: 'left' });
-  sr.reveal('.about-text', { origin: 'right' });
-  sr.reveal('.container1', { interval: 200 });
-  sr.reveal('.row', { interval: 200 });
-  sr.reveal('.timeline-item', { interval: 200 });
-  sr.reveal('.achievement-card', { interval: 200 });
-  sr.reveal('.contact-text, .contact-container', { origin: 'bottom' });
+function initScrollReveal() {
+  if (typeof ScrollReveal !== 'undefined') {
+    const sr = ScrollReveal({
+      origin: 'bottom',
+      distance: '60px',
+      duration: 1000,
+      delay: 200,
+      reset: false
+    });
+    
+    sr.reveal('.home-content, .profile-container', { origin: 'top' });
+    sr.reveal('.about-img', { origin: 'left' });
+    sr.reveal('.about-text', { origin: 'right' });
+    sr.reveal('.container1', { interval: 200 });
+    sr.reveal('.row', { interval: 200 });
+    sr.reveal('.timeline-item', { interval: 200 });
+    sr.reveal('.achievement-card', { interval: 200 });
+    sr.reveal('.contact-text, .contact-container', { origin: 'bottom' });
+  }
 }
 
 // ========== Handle Image Loading Errors ==========
@@ -905,11 +916,147 @@ function initPageTransitions() {
   });
 }
 
+// ========== Top Viewport Scroll Progress ==========
+function updateScrollProgress() {
+  const progressBar = document.querySelector('.scroll-progress-bar');
+  if (!progressBar) return;
+  const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+  if (totalHeight === 0) return;
+  const progress = (window.scrollY / totalHeight) * 100;
+  progressBar.style.width = `${progress}%`;
+}
+
+// ========== Technical Skills Tabs Filter ==========
+function initSkillsFilter() {
+  const filterBtns = document.querySelectorAll('.skill-filter-btn');
+  const skillBars = document.querySelectorAll('.Technical-bars .bar');
+  
+  if (filterBtns.length === 0 || skillBars.length === 0) return;
+  
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      
+      const filterValue = btn.getAttribute('data-filter');
+      
+      skillBars.forEach(bar => {
+        const category = bar.getAttribute('data-skill-category');
+        if (filterValue === 'all' || category === filterValue) {
+          bar.style.display = '';
+          // Force layout reflow
+          void bar.offsetWidth;
+          bar.style.opacity = '1';
+          bar.style.transform = 'translateY(0) scale(1)';
+        } else {
+          bar.style.opacity = '0';
+          bar.style.transform = 'translateY(10px) scale(0.95)';
+          setTimeout(() => {
+            if (bar.style.opacity === '0') {
+              bar.style.display = 'none';
+            }
+          }, 300);
+        }
+      });
+    });
+  });
+}
+
+// ========== Projects Slider Carousel ==========
+function initPortfolioSlider() {
+  const slider = document.querySelector('.portfolio-slider');
+  const track = document.querySelector('.portfolio-content');
+  const prevBtn = document.querySelector('.portfolio-prev');
+  const nextBtn = document.querySelector('.portfolio-next');
+  const dotsContainer = document.querySelector('.portfolio-dots');
+
+  if (!slider || !track || !prevBtn || !nextBtn || !dotsContainer) return;
+
+  let currentIndex = 0;
+  let maxIndex = 0;
+
+  function getVisibleCards() {
+    if (window.innerWidth <= 768) return 1;
+    if (window.innerWidth <= 1200) return 2;
+    return 3;
+  }
+
+  function getStepSize() {
+    const cards = Array.from(track.querySelectorAll('.project-card')).filter(card => card.style.display !== 'none');
+    if (cards.length === 0) return 0;
+    const gap = parseFloat(getComputedStyle(track).gap) || 0;
+    return cards[0].getBoundingClientRect().width + gap;
+  }
+
+  function buildDots() {
+    dotsContainer.innerHTML = '';
+    const cards = Array.from(track.querySelectorAll('.project-card')).filter(card => card.style.display !== 'none');
+    maxIndex = Math.max(0, cards.length - getVisibleCards());
+    for (let i = 0; i <= maxIndex; i++) {
+      const dot = document.createElement('button');
+      dot.type = 'button';
+      dot.className = 'portfolio-dot';
+      dot.setAttribute('aria-label', `Go to project slide ${i + 1}`);
+      dot.addEventListener('click', () => {
+        currentIndex = i;
+        updateSlider();
+      });
+      dotsContainer.appendChild(dot);
+    }
+  }
+
+  function updateSlider() {
+    const cards = Array.from(track.querySelectorAll('.project-card')).filter(card => card.style.display !== 'none');
+    maxIndex = Math.max(0, cards.length - getVisibleCards());
+    currentIndex = Math.min(currentIndex, maxIndex);
+    
+    const dots = dotsContainer.querySelectorAll('.portfolio-dot');
+    dots.forEach((dot, index) => {
+      dot.classList.toggle('active', index === currentIndex);
+    });
+
+    track.style.transform = `translateX(-${currentIndex * getStepSize()}px)`;
+
+    prevBtn.disabled = currentIndex === 0;
+    nextBtn.disabled = currentIndex === maxIndex;
+  }
+
+  prevBtn.addEventListener('click', () => {
+    currentIndex = Math.max(0, currentIndex - 1);
+    updateSlider();
+  });
+
+  nextBtn.addEventListener('click', () => {
+    currentIndex = Math.min(maxIndex, currentIndex + 1);
+    updateSlider();
+  });
+
+  window.addEventListener('resize', () => {
+    buildDots();
+    updateSlider();
+  });
+
+  window.resetPortfolioSlider = function() {
+    currentIndex = 0;
+    buildDots();
+    updateSlider();
+  };
+
+  window.resetPortfolioSlider();
+}
+
 window.addEventListener('DOMContentLoaded', () => {
   initParticleCanvas();
   initCopyrightYear();
   initAchievementsSlider();
+  initPortfolioSlider();
   initPageTransitions();
+  initTypedAnimation();
+  initScrollReveal();
+  initSkillsFilter();
+  
+  window.addEventListener('scroll', updateScrollProgress);
+  updateScrollProgress();
   
   // ========== Dynamic Mouse-Wheel Horizontal Scroll Translation ==========
   const wrapper = document.querySelector('.portfolio-horizontal-wrapper');

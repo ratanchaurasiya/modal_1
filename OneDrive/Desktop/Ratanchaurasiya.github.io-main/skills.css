@@ -130,6 +130,30 @@
   line-height: 1.3;
 }
 
+.Technical-bars .bar .info .skill-meta {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+}
+
+.Technical-bars .bar .info .skill-meta span:first-child {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-color);
+  background: none;
+}
+
+.Technical-bars .bar .info .skill-meta .skill-level {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  line-height: 1.2;
+  margin-top: 0.15rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05rem;
+}
+
 .Technical-bars .bar .info .percent-tag {
   min-width: 4.6rem;
   padding: 0.4rem 0.7rem;
@@ -163,7 +187,11 @@
 .progress-line.css span,
 .progress-line.javascript span,
 .progress-line.responsive span,
+.progress-line.react span,
 .progress-line.mysql span,
+.progress-line.nodejs span,
+.progress-line.express span,
+.progress-line.mongodb span,
 .progress-line.nodemcu span,
 .progress-line.c-cpp span,
 .progress-line.dbms span,
@@ -265,8 +293,88 @@
     grid-template-columns: auto minmax(0, 1fr);
   }
 
-  .professional-card span {
+  .professional-card .radial-bar {
     grid-column: 2;
     justify-self: start;
   }
+}
+
+/* ========== RADIAL PROGRESS BARS ========== */
+.radial-bar {
+  position: relative;
+  width: 5.6rem;
+  height: 5.6rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.radial-bar svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.radial-bar .progress-bar {
+  stroke-width: 15px;
+  stroke: rgba(148, 163, 184, 0.12);
+  fill: transparent;
+}
+
+.radial-bar .path {
+  stroke-width: 15px;
+  stroke: var(--secondary-color);
+  fill: transparent;
+  stroke-dasharray: 502;
+  stroke-dashoffset: 502;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.radial-bar .percentage {
+  position: absolute;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--text-color);
+}
+
+/* ========== SKILLS FILTER TABS ========== */
+.skills-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 2.8rem;
+  justify-content: flex-start;
+  border-bottom: 0.1rem solid var(--border-color);
+  padding-bottom: 1.6rem;
+}
+
+.skill-filter-btn {
+  padding: 0.8rem 1.6rem;
+  border-radius: 0.8rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 0.1rem solid var(--border-color);
+  color: var(--text-secondary);
+  font-size: 1.3rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.skill-filter-btn:hover {
+  color: var(--text-color);
+  border-color: var(--border-hover);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.skill-filter-btn.active {
+  color: #ffffff;
+  background: var(--button-gradient);
+  border-color: transparent;
+  box-shadow: 0 0.4rem 1.5rem var(--main-glow);
+}
+
+.Technical-bars .bar {
+  transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), background var(--transition), border-color var(--transition);
 }
